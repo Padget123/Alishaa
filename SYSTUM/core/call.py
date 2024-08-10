@@ -17,7 +17,7 @@ from pytgcalls.types.input_stream.quality import HighQualityAudio, MediumQuality
 from pytgcalls.types.stream import StreamAudioEnded
 
 import config
-from SYSTUM import LOGGER, YouTube, app
+from SYSTUM import LOGGER, YouTube, app, YTB
 from SYSTUM.misc import db
 from SYSTUM.utils.database import (
     add_active_chat,
@@ -416,10 +416,17 @@ class Call(PyTgCalls):
                         video=True if str(streamtype) == "video" else False,
                     )
                 except:
-                    return await mystic.edit_text(
-                        _["call_6"], disable_web_page_preview=True
-                    )
-                if video:
+                    try:
+                        file_path, direct = await YTB.download(
+                            videoid,
+                            mystic,
+                            videoid=True,
+                            video=True if str(streamtype) == "video" else False,
+                        )
+                    except:
+                        return await mystic.edit_text(
+                            _["call_6"], disable_web_page_preview=True
+                        )
                     stream = AudioVideoPiped(
                         file_path,
                         audio_parameters=HighQualityAudio(),
