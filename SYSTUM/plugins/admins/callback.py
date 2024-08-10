@@ -3,7 +3,7 @@ import asyncio
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from SYSTUM import YouTube, app
+from SYSTUM import YouTube, app, YTB
 from SYSTUM.core.call import KING
 from SYSTUM.misc import SUDOERS, db
 from SYSTUM.utils.database import (
@@ -253,7 +253,15 @@ async def del_back_playlist(client, CallbackQuery, _):
                     video=status,
                 )
             except:
-                return await mystic.edit_text(_["call_6"])
+                try:
+                    file_path, direct = await YTB.download(
+                        videoid,
+                        mystic,
+                        videoid=True,
+                        video=status,
+                    )
+                except:
+                    return await mystic.edit_text(_["call_6"])
             try:
                 image = await YouTube.thumbnail(videoid, True)
             except:
